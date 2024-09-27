@@ -19,7 +19,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.pm.PackageManager;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 
@@ -28,10 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 
 // ------------------------------------------------------------------
@@ -48,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner elEscanner;
 
     private ScanCallback callbackDelEscaneo = null;
+
+    private final String sensorName = "We love Jaen yey";
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         BluetoothDevice bluetoothDevice = resultado.getDevice();
-        byte[] bytes = resultado.getScanRecord().getBytes();
+        byte[] bytes = Objects.requireNonNull(resultado.getScanRecord()).getBytes();
         int rssi = resultado.getRssi();
 
         Log.d(ETIQUETA_LOG, " ******************");
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Log.d(ETIQUETA_LOG, " nombre = " + bluetoothDevice.getName());
-        Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice.toString());
+        Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice);
 
         /*
         ParcelUuid[] puuids = bluetoothDevice.getUuids();
@@ -152,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): instalamos scan callback ");
 
 
-        byte[] uuidBytes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+
 
         // Crear un filtre pel dispositiu amb nom "AAaagh"
-        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(new ParcelUuid(UUID.nameUUIDFromBytes(uuidBytes))).build();
+        ScanFilter filter = new ScanFilter.Builder().setDeviceName(sensorName).build();
         List<ScanFilter> filters = new ArrayList<>();
         filters.add(filter);
 
@@ -163,11 +162,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
                 byte[] bytes = Objects.requireNonNull(resultado.getScanRecord()).getBytes();
-                TramaIBeacon tib = new TramaIBeacon(bytes);
-                byte[] uuidBytesTramaEntrante = tib.getUUID();
-                if (Arrays.equals(uuidBytesTramaEntrante, uuidBytes)) {
+                TramaIBeacon tib  = new TramaIBeacon(bytes);
+                if ( sensorName.equals(Utilidades.bytesToString(tib.getUUID())) ) {
                     mostrarInformacionDispositivoBTLE(resultado);
                 }
             }
