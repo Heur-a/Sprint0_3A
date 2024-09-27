@@ -27,12 +27,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -95,27 +95,28 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
     private void mostrarInformacionDispositivoBTLE(ScanResult resultado) {
 
+
         BluetoothDevice bluetoothDevice = resultado.getDevice();
-        byte[] bytes = Objects.requireNonNull(resultado.getScanRecord()).getBytes();
+        byte[] bytes = resultado.getScanRecord().getBytes();
         int rssi = resultado.getRssi();
 
-        Log.d(ETIQUETA_LOG, " ****************************************************");
-        Log.d(ETIQUETA_LOG, " ****** DISPOSITIVO DETECTADO BTLE ******************");
-        Log.d(ETIQUETA_LOG, " ****************************************************");
+        Log.d(ETIQUETA_LOG, " ******************");
+        Log.d(ETIQUETA_LOG, " ** DISPOSITIVO DETECTADO BTLE ****** ");
+        Log.d(ETIQUETA_LOG, " ******************");
         if (ActivityCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 requestPermissionLuancher.launch(BLUETOOTH_CONNECT);
             }
         }
+        Log.d(ETIQUETA_LOG, " nombre = " + bluetoothDevice.getName());
+        Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice.toString());
 
-        // Només mostrar dispositius amb nom vàlid
-        if (bluetoothDevice.getName() != null) {
-            Log.d(ETIQUETA_LOG, " nombre = " + bluetoothDevice.getName());
-        } else {
-            Log.d(ETIQUETA_LOG, " nombre = Dispositivo sin nombre ");
-        }
-
-        Log.d(ETIQUETA_LOG, " toString = " + bluetoothDevice);
+        /*
+        ParcelUuid[] puuids = bluetoothDevice.getUuids();
+        if ( puuids.length >= 1 ) {
+            //Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].getUuid());
+           // Log.d(ETIQUETA_LOG, " uuid = " + puuids[0].toString());
+        }*/
 
         Log.d(ETIQUETA_LOG, " dirección = " + bluetoothDevice.getAddress());
         Log.d(ETIQUETA_LOG, " rssi = " + rssi);
@@ -134,19 +135,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, "          iBeacon length 0x = " + Integer.toHexString(tib.getiBeaconLength()) + " ( "
                 + tib.getiBeaconLength() + " ) ");
         Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToHexString(tib.getUUID()));
-        Log.d(ETIQUETA_LOG, " uuid  = " + new String(tib.getUUID(), StandardCharsets.US_ASCII));
+        Log.d(ETIQUETA_LOG, " uuid  = " + Utilidades.bytesToString(tib.getUUID()));
         Log.d(ETIQUETA_LOG, " major  = " + Utilidades.bytesToHexString(tib.getMajor()) + "( "
                 + Utilidades.bytesToInt(tib.getMajor()) + " ) ");
         Log.d(ETIQUETA_LOG, " minor  = " + Utilidades.bytesToHexString(tib.getMinor()) + "( "
                 + Utilidades.bytesToInt(tib.getMinor()) + " ) ");
         Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
-        Log.d(ETIQUETA_LOG, " ****************************************************");
-        Log.d(ETIQUETA_LOG, "ARRAY UUIDS" + Arrays.toString(bluetoothDevice.getUuids()));
-        Log.d(ETIQUETA_LOG, "BLT TYPE " + bluetoothDevice.getType());
-        Log.d(ETIQUETA_LOG, resultado.toString());
+        Log.d(ETIQUETA_LOG, " ******************");
 
     } // ()
-
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private void buscarEsteDispositivoBTLE() {

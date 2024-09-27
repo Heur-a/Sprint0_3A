@@ -19,7 +19,7 @@ public class Utilidades {
 
     // -------------------------------------------------------------------------------
     // -------------------------------------------------------------------------------
-    public static UUID stringToUUID( String uuid ) {
+    public static UUID stringToUUID(String uuid ) {
         if ( uuid.length() != 16 ) {
             throw new Error( "stringUUID: string no tiene 16 caracteres ");
         }
@@ -29,7 +29,7 @@ public class Utilidades {
         String menosSignificativo = uuid.substring(8, 16);
         UUID res = new UUID( Utilidades.bytesToLong( masSignificativo.getBytes() ), Utilidades.bytesToLong( menosSignificativo.getBytes() ) );
 
-        // Log.d( MainActivity.ETIQUETA_LOG, " \n\n***** stringToUUID *** " + uuid  + "=?=" + Utilidades.uuidToString( res ) );
+        // Log.d( MainActivity.ETIQUETA_LOG, " \n\n*** stringToUUID * " + uuid  + "=?=" + Utilidades.uuidToString( res ) );
 
         // UUID res = UUID.nameUUIDFromBytes( comoBytes ); no va como quiero
 
@@ -110,7 +110,7 @@ public class Utilidades {
 
         if ( (bytes[ 0 ] & 0x8) != 0 ) {
             // si tiene signo negativo (un 1 a la izquierda del primer byte
-            res = -(~(byte)res)-1; // complemento a 2 (~) de res pero como byte, -1
+            res = -((byte)res)-1; // complemento a 2 () de res pero como byte, -1
         }
        /*
         Log.d( MainActivity.ETIQUETA_LOG, "bytesToInt(): res = " + res + " ~res=" + (res ^ 0xffff)
@@ -136,10 +136,9 @@ public class Utilidades {
         }
         return sb.toString();
     } // ()
+
 } // class
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------
-// -----------------------------------------------------------------------------------
-
-
+// ----------------------------------------------------------------------------------
